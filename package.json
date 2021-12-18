@@ -4,7 +4,8 @@
   "description": "Book Directory API",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "start": "node index.js",
+	"wipe_db": "db\\wipe_create_db.bat"
   },
   "author": "Mykael Kane",
   "license": "ISC",

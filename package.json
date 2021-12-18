@@ -1,0 +1,15 @@
+{
+  "name": "book_directory",
+  "version": "1.0.0",
+  "description": "Book Directory API",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Mykael Kane",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "sqlite3": "^4.2.0"
+  }
+}

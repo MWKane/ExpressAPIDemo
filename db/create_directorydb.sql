@@ -1,6 +1,6 @@
 CREATE TABLE books (
     id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL CHECK (id <= 999999),
-    name STRING NOT NULL,
+    title STRING NOT NULL,
     author STRING NOT NULL,
     published DATE
 );

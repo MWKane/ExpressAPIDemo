@@ -2,10 +2,12 @@
   "name": "book_directory",
   "version": "1.0.0",
   "description": "Book Directory API",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-	"wipe_db": "db\\recreate_db.bat"
+    "start": "node app.js",
+	"wipe_db": "db\\recreate_db.bat",
+
+	"test_post": "node test\\test_post.js"
   },
   "author": "Mykael Kane",
   "license": "ISC",

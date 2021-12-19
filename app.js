@@ -29,9 +29,11 @@ app.get('/api/books', (req, res) => {
 	db.all(sql, [], (err, rows) => {
 		if (err) {
 			res.send('ERROR: problem retrieving books from database.');
+			res.end();
 			return console.error(err.message);
 		};
 		res.send(JSON.stringify(rows));
+		res.end();
 	});
 });
 app.get('/api/books/:id', (req, res) => {
@@ -40,19 +42,21 @@ app.get('/api/books/:id', (req, res) => {
 	db.all(sql, [req.params.id], (err, rows) => {
 		if (err) {
 			res.send('ERROR: Problem retrieving book from database.');
+			res.end();
 			return console.error(err.message);
 		};
 		res.send(JSON.stringify(rows[0]));
+		res.end();
 	});
 });
 
 app.post('/api/books', (req, res) => {
-	let book = req.body;
+	var book = req.body;
 
 	if (!verifyBookProps(book)) {
 		res.send('ERROR: Book failed validation process.');
 		res.end();
-		return console.log('POST book failed.');
+		return console.log('POST book failed validation.');
 	};
 
 	var sql = '';
@@ -68,15 +72,35 @@ app.post('/api/books', (req, res) => {
 	db.run(sql, values, function(err) {
 		if (err) {
 			res.send('ERROR: Problem posting book to database.');
+			res.end();
 			return console.error(err.message);
 		};
 		console.log(`A book (${book.title}) has been POSTED: id = ${this.lastID}`);
 		res.send(`${this.lastID}`);
+		res.end();
 	});
 });
 
 app.put('/api/books', (req, res) => {
-	res.send(`PUT book: ${req.body}`);
+	var book = req.body;
+
+	if (!verifyBookProps(book)) {
+		res.send('ERROR: Book failed validation process.');
+		res.end();
+		return console.log('PUT book failed validation.');
+	};
+
+	var sql = 'INSERT INTO books (id, title, author, published) VALUES (?, ?, ?, ?) ON CONFLICT (id) DO UPDATE SET title = excluded.title, author = excluded.author, published = excluded.published;';
+	db.run(sql, [book.id, book.title, book.author, book.published], function (err) {
+		if (err) {
+			res.send('ERROR: Problem posting book to database.');
+			res.end();
+			return console.error(err.message);
+		};
+		console.log(`A book (${book.title}) has been PUTTED: id = ${book.id || this.lastID}`);
+		res.send(`${book.id || this.lastID}`);
+		res.end();
+	});
 });
 
 app.delete('/api/books/:id', (req, res) => {
@@ -84,12 +108,14 @@ app.delete('/api/books/:id', (req, res) => {
 	db.run(sql, [req.params.id], function(err) {
 		if (err) {
 			res.send('ERROR: Failed to delete book from database.');
+			res.end();
 			return console.error(err.message);
 		};
 		if (this.changes === 0) return res.send('ERROR: No book found.');
 
 		console.log(`A book has been DELETED: id = ${req.params.id}`);
 		res.send(`${this.changes}`);
+		res.end();
 	});
 });
 

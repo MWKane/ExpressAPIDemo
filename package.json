@@ -7,9 +7,10 @@
     "start": "node app.js",
 	"wipe_db": "db\\recreate_db.bat",
 
-	"test_post": "node test\\test_post.js",
 	"test_get_all": "node test\\test_get_all.js",
 	"test_get_id": "node test\\test_get_id.js",
+	"test_post": "node test\\test_post.js",
+	"test_put": "node test\\test_put.js",
 	"test_delete": "node test\\test_delete.js"
   },
   "author": "Mykael Kane",

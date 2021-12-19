@@ -59,17 +59,8 @@ app.post('/api/books', (req, res) => {
 		return console.log('POST book failed validation.');
 	};
 
-	var sql = '';
-	var values = [];
-	if (book.hasOwnProperty('published')) {
-		sql = 'INSERT INTO books (title, author, published) VALUES (?, ?, ?);';
-		values = [book.title, book.author, book.published];
-	} else {
-		sql = 'INSERT INTO books (title, author) VALUES (?, ?);';
-		values = [book.title, book.author];
-	}
-
-	db.run(sql, values, function(err) {
+	var sql = 'INSERT INTO books (title, author, published) VALUES (?, ?, ?);';
+	db.run(sql, [book.title, book.author, book.published], function(err) {
 		if (err) {
 			res.send('ERROR: Problem posting book to database.');
 			res.end();

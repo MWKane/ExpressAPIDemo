@@ -6,7 +6,7 @@ const config = require('../config.json');
 const options = {
 	hostname: config.hostname,
 	port: config.port,
-	path: '/api/books/100001',
+	path: '/api/books/100011',
 	method: 'DELETE'
 };
 

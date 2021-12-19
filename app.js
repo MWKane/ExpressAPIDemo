@@ -8,6 +8,7 @@ const config = require('./config.json');
 
 const app = express();
 app.use(express.json());
+app.use(express.static(__dirname + '/documentation'));
 app.listen(config.port, config.hostname, () => {
 	console.log(`book_directory listening at http://${config.hostname}:${config.port}`);
 });
@@ -110,6 +111,11 @@ app.delete('/api/books/:id', (req, res) => {
 	});
 });
 
+
+app.use(function(req, res, next) {
+	// Display documentation on 404
+	if (req.accepts('html')) res.sendFile(`${__dirname}/documentation/index.html`);
+});
 
 function verifyBookProps(book = {}) {
 	if (!book.hasOwnProperty('title') || !book.hasOwnProperty('author')) return false;

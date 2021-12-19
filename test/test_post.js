@@ -6,7 +6,7 @@ const config = require('../config.json');
 const book = JSON.stringify({
 	title: 'To Kill a Mockingbird',
 	author: 'Harper Lee',
-	published: '11/07/1960'
+	published: '1960-07-11'
 });
 
 const options = {

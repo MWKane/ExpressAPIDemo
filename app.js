@@ -30,15 +30,36 @@ app.get('/api/books/:id', (req, res) => {
 });
 
 app.post('/api/books', (req, res) => {
-	if (!verifyBook(req.body)) {
-		res.send('Error processing book data.');
+	let book = req.body;
+
+	if (!verifyBookProps(book)) {
+		res.send('ERROR: Book failed validation process.');
 		res.end();
 
 		return console.log('POST book failed.');
 	};
 
-	console.log(`POST book: ${req.body.title}`);
-	res.json(req.body);
+
+	var sql = '';
+	var values = [];
+	if (book.hasOwnProperty('published')) {
+		sql = 'INSERT INTO books (title, author, published) VALUES (?, ?, ?)';
+		values = [book.title, book.author, book.published];
+	} else {
+		sql = 'INSERT INTO books (title, author) VALUES (?, ?)';
+		values = [book.title, book.author];
+	}
+
+	db.run(sql, values, function(err) {
+		if (err) {
+			res.send('ERROR: Problem posting book to database.');
+			return console.error(err.message);
+		};
+
+		console.log(`A book (${book.title}) has been POSTED: id = ${this.lastID}`);
+		res.send(`${this.lastID}`);
+	});
+
 });
 
 app.put('/api/books', (req, res) => {
@@ -50,7 +71,20 @@ app.delete('/api/books/:id', (req, res) => {
 });
 
 
-function verifyBook(book = {}) {
-	if (book.hasOwnProperty('title') && book.hasOwnProperty('author')) return true;
-	return false;
+function verifyBookProps(book = {}) {
+	if (!book.hasOwnProperty('title') || !book.hasOwnProperty('author')) return false;
+	if (book.hasOwnProperty('published')) return validatePublishedDate(book.published);
+	return true;
+};
+
+function validatePublishedDate(dateString = '') {
+	// Test if dateString is a valid date not in yyyy-mm-dd format
+	var regEx = /^\d{4}-\d{2}-\d{2}$/
+	if (!dateString.match(regEx)) return false;
+
+	// Test if given date is a valid calendar day
+	var testDate = new Date(dateString);
+	var dNum = testDate.getTime();
+	if (!dNum && dNum !== 0) return false;
+	return testDate.toISOString().slice(0,10) === dateString;
 };

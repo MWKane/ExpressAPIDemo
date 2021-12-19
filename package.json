@@ -9,7 +9,8 @@
 
 	"test_post": "node test\\test_post.js",
 	"test_get_all": "node test\\test_get_all.js",
-	"test_get_id": "node test\\test_get_id.js"
+	"test_get_id": "node test\\test_get_id.js",
+	"test_delete": "node test\\test_delete.js"
   },
   "author": "Mykael Kane",
   "license": "ISC",

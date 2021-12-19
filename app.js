@@ -15,7 +15,6 @@ app.listen(config.port, config.hostname, () => {
 
 const db = new sqlite.Database(config.database, sqlite.OPEN_READWRITE, err => {
 	if (err) return console.error(err.message);
-
 	console.log('Connected to database successfully');
 });
 process.on('exit', () => {
@@ -26,7 +25,7 @@ process.on('exit', () => {
 
 app.get('/api/books', (req, res) => {
 	// Get all books
-	var sql = 'SELECT * FROM books';
+	var sql = 'SELECT * FROM books;';
 	db.all(sql, [], (err, rows) => {
 		if (err) {
 			res.send('ERROR: problem retrieving books from database.');
@@ -37,10 +36,10 @@ app.get('/api/books', (req, res) => {
 });
 app.get('/api/books/:id', (req, res) => {
 	// Get book by id
-	var sql = 'SELECT * FROM books WHERE id = ?'
+	var sql = 'SELECT * FROM books WHERE id = ?;'
 	db.all(sql, [req.params.id], (err, rows) => {
 		if (err) {
-			res.send('ERROR: problem retrieving book from database.');
+			res.send('ERROR: Problem retrieving book from database.');
 			return console.error(err.message);
 		};
 		res.send(JSON.stringify(rows[0]));
@@ -53,17 +52,16 @@ app.post('/api/books', (req, res) => {
 	if (!verifyBookProps(book)) {
 		res.send('ERROR: Book failed validation process.');
 		res.end();
-
 		return console.log('POST book failed.');
 	};
 
 	var sql = '';
 	var values = [];
 	if (book.hasOwnProperty('published')) {
-		sql = 'INSERT INTO books (title, author, published) VALUES (?, ?, ?)';
+		sql = 'INSERT INTO books (title, author, published) VALUES (?, ?, ?);';
 		values = [book.title, book.author, book.published];
 	} else {
-		sql = 'INSERT INTO books (title, author) VALUES (?, ?)';
+		sql = 'INSERT INTO books (title, author) VALUES (?, ?);';
 		values = [book.title, book.author];
 	}
 
@@ -72,7 +70,6 @@ app.post('/api/books', (req, res) => {
 			res.send('ERROR: Problem posting book to database.');
 			return console.error(err.message);
 		};
-
 		console.log(`A book (${book.title}) has been POSTED: id = ${this.lastID}`);
 		res.send(`${this.lastID}`);
 	});
@@ -83,7 +80,17 @@ app.put('/api/books', (req, res) => {
 });
 
 app.delete('/api/books/:id', (req, res) => {
-	res.send(`DELETE book: ${req.params.id}`);
+	var sql = 'DELETE FROM books WHERE id = ?;';
+	db.run(sql, [req.params.id], function(err) {
+		if (err) {
+			res.send('ERROR: Failed to delete book from database.');
+			return console.error(err.message);
+		};
+		if (this.changes === 0) return res.send('ERROR: No book found.');
+
+		console.log(`A book has been DELETED: id = ${req.params.id}`);
+		res.send(`${this.changes}`);
+	});
 });
 
 

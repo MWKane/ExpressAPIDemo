@@ -24,9 +24,27 @@ process.on('exit', () => {
 	});
 });
 
-
+app.get('/api/books', (req, res) => {
+	// Get all books
+	var sql = 'SELECT * FROM books';
+	db.all(sql, [], (err, rows) => {
+		if (err) {
+			res.send('ERROR: problem retrieving books from database.');
+			return console.error(err.message);
+		};
+		res.send(JSON.stringify(rows));
+	});
+});
 app.get('/api/books/:id', (req, res) => {
-	res.send(`GET book: ${req.params.id}`);
+	// Get book by id
+	var sql = 'SELECT * FROM books WHERE id = ?'
+	db.all(sql, [req.params.id], (err, rows) => {
+		if (err) {
+			res.send('ERROR: problem retrieving book from database.');
+			return console.error(err.message);
+		};
+		res.send(JSON.stringify(rows[0]));
+	});
 });
 
 app.post('/api/books', (req, res) => {
@@ -38,7 +56,6 @@ app.post('/api/books', (req, res) => {
 
 		return console.log('POST book failed.');
 	};
-
 
 	var sql = '';
 	var values = [];
@@ -59,7 +76,6 @@ app.post('/api/books', (req, res) => {
 		console.log(`A book (${book.title}) has been POSTED: id = ${this.lastID}`);
 		res.send(`${this.lastID}`);
 	});
-
 });
 
 app.put('/api/books', (req, res) => {

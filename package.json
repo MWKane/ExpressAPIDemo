@@ -7,7 +7,9 @@
     "start": "node app.js",
 	"wipe_db": "db\\recreate_db.bat",
 
-	"test_post": "node test\\test_post.js"
+	"test_post": "node test\\test_post.js",
+	"test_get_all": "node test\\test_get_all.js",
+	"test_get_id": "node test\\test_get_id.js"
   },
   "author": "Mykael Kane",
   "license": "ISC",
